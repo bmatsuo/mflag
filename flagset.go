@@ -215,8 +215,10 @@ func (fs *FlagSet) handleError(err os.Error) {
     case Continue:
         return
     case Exit:
+        fs.PrintHelp()
         os.Exit(1)
     case Panic:
+        fs.PrintHelp()
         panic(err)
     }
 }
