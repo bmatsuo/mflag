@@ -16,4 +16,5 @@ GOFILES=\
 
 include $(GOROOT)/src/Make.pkg
 
-
+ex.%:
+	bash -c 'for d in examples/*; do cd $$d && echo "$@" | sed "s/ex\.//" | xargs gomake && cd -; done'
