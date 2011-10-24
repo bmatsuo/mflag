@@ -72,30 +72,43 @@ This will do the same thing with a subtle difference. The default values in
 this case are evaluated as strings and converted to their values when Parse
 is called.
 
-Prerequisites
--------------
-
-You must have Go installed (http://golang.org/). 
-
 Installation
 -------------
 
-Use goinstall to install mflags
+Use goinstall to install mflag
 
-    goinstall github.com/bmatsuo/mflags
+    goinstall github.com/bmatsuo/mflag
+
+Otherwise clone the repository and install using `gomake`
+
+    git clone https://github.com/bmatsuo/mflag
+
+Examples
+--------
+
+There are working examples in the ./examples/ subdirectory. They can be
+installed from the project directory with the command
+
+    gomake ex.install
+
+The example programs all have fairly silly executable names, so there is
+little chance that they will overwrite another program. They can then be
+uninstalled with the command
+
+    gomake ex.nuke
 
 General Documentation
 ---------------------
 
 Use godoc to vew the documentation for mflags
 
-    godoc github.com/bmatsuo/mflags
+    godoc github.com/bmatsuo/mflag
 
 Or alternatively, use a godoc http server
 
     godoc -http=:6060
 
-and view the url http://localhost:6060/pkg/github.com/bmatsuo/mflags/
+and view the url http://localhost:6060/pkg/github.com/bmatsuo/mflag/
 
 Author
 ======
