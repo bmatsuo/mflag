@@ -7,13 +7,13 @@
 
 include $(GOROOT)/src/Make.inc
 
-TARG=mflag
+TARG=mflagSimple
 GOFILES=\
-		errors.go\
-		strconv.go\
-		flagset.go\
-        mflag.go\
+        mflagSimple.go\
 
-include $(GOROOT)/src/Make.pkg
+include $(GOROOT)/src/Make.cmd
 
+
+test:
+	gotest
 

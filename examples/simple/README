@@ -1,0 +1,53 @@
+About simple
+
+
+simple is the best program for...
+
+Documentation
+
+
+Usage
+
+
+Run simple with the command
+
+    mflagsSimple [options]
+
+Prerequisites
+
+
+You must have Go installed (http://golang.org/). 
+
+Installation
+
+
+Use goinstall to install simple
+
+    goinstall github.com/bmatsuo/mflagsSimple
+
+General Documentation
+
+
+Use godoc to vew the documentation for simple
+
+    godoc github.com/bmatsuo/mflagsSimple
+
+Or alternatively, use a godoc http server
+
+    godoc -http=:6060
+
+and view the url http://localhost:6060/pkg/github.com/bmatsuo/mflagsSimple/
+
+Author
+
+
+Bryan Matsuo <bryan.matsuo@gmail.com>
+
+Copyright & License
+
+
+Copyright (c) 2011, Bryan Matsuo.
+All rights reserved.
+
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.

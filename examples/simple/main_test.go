@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package mflags
+package main
 
-/*  Filename:    mflags_test.go
+/*  Filename:    main_test.go
  *  Author:      Bryan Matsuo <bryan.matsuo@gmail.com>
- *  Created:     Sun Oct 23 22:20:52 PDT 2011
- *  Description: Main test file for mflags
+ *  Created:     Sun Oct 23 22:31:04 PDT 2011
+ *  Description: Main test file for simple
  */
 
 import (
@@ -15,7 +15,7 @@ import (
 )
 
 
-func TestMflags(T *testing.T) {
+func TestMflagsSimple(T *testing.T) {
 
 }
 
