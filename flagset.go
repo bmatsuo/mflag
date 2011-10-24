@@ -94,6 +94,7 @@ func New(v interface{}) *FlagSet {
         if f.name == "" {
             f.name = strings.ToLower(field.Name)
         }
+        f.def = field.Tag.Get("def")
         f.help = field.Tag.Get("help")
         f.typ = field.Type
         f.def = valueToString(fs.v.Field(i))
@@ -224,14 +225,18 @@ func (fs *FlagSet) handleError(err os.Error) {
 }
 
 //  Parse a list of arguments, assigning values the fields of the object used
-//  to create fs.
-func (fs *FlagSet) Parse(args []string) os.Error {
+//  to create fs. It returns the FlagSet fs, any remaining non-flag arguments,
+//  and any error that was encountered during processing.
+func (fs *FlagSet) Parse(args []string) (*FlagSet, []string, os.Error) {
     // Clear previous parse data.
     fs.args = nil
     fs.err = nil
     fs.fcount = 0
     firstarg := 0
     for i := range fs.flags {
+        if f := fs.flags[i]; f.def != "" {
+            fs.setFlag(i, f.def)
+        }
         fs.flags[i].setcount = 0
     }
 
@@ -280,8 +285,11 @@ func (fs *FlagSet) Parse(args []string) os.Error {
     if firstarg < len(args) {
         fs.args = args[firstarg:]
     }
-    return fs.err
+    return fs, fs.args, fs.err
 }
+
+//  Return the non-flag arguments.
+func (fs *FlagSet) Args() []string { return fs.args }
 
 //  Return the i-th argument, see FlagSet.NArg().
 func (fs *FlagSet) Arg(i int) string { return fs.args[i] }
