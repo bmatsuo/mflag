@@ -102,6 +102,13 @@ func TestUsage(T *testing.T) {
     if usage != "Usage: SampleFlags [options] [Argument ...]\n" {
         T.Errorf("FlagSet usage string is not correct '%s'", usage)
     }
+    usage, err = testflags.WithArgs("a b", "c d").UsageString()
+    if err != nil {
+        T.Errorf("Error generating usage string; %s", err.String())
+    }
+    if usage != "Usage: SampleFlags a b\n       SampleFlags c d\n" {
+        T.Errorf("FlagSet usage string is not correct '%s'", usage)
+    }
 }
 
 func TestFlagSkip(T *testing.T) {

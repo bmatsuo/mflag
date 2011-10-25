@@ -113,8 +113,9 @@ func New(v interface{}) *FlagSet {
     fs.Named(fs.t.Name())
     fs.name = fs.t.Name()
     fs.styles = []string{"[options] [Argument ...]"}
-    fs.usage = "Usage: {{ with $x := . }}{{ range .ArgStyles }}{{ $x.Name }} {{ . }}\n{{ end }}{{ end }}"
+    fs.usage = "Usage: {{ with $x := . }}{{ range $i, $y := .ArgStyles }}{{ if $i }}       {{ end }}{{ $x.Name }} {{ . }}\n{{ end }}{{ end }}"
     fs.flaghelp = `  -{{ .Name }}={{ .Default }}{{ if .Help }}: {{ .Help }}{{ end }}`
+    fs.OnError(Help|Exit)
     return fs
 }
 
@@ -236,14 +237,19 @@ func (fs *FlagSet) OnError(action ErrorHandling) *FlagSet {
 
 func (fs *FlagSet) handleError(err os.Error) {
     fs.err = err
-    switch fs.handling {
+    h := fs.handling
+    if h.Debug() {
+        fmt.Println(err.String())
+    }
+    if h.Help() {
+        fs.PrintHelp()
+    }
+    switch h.Control() {
     case Continue:
         return
     case Exit:
-        fs.PrintHelp()
         os.Exit(1)
     case Panic:
-        fs.PrintHelp()
         panic(err)
     }
 }
