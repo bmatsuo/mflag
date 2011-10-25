@@ -87,17 +87,25 @@ func New(v interface{}) *FlagSet {
     // Fill out the flags list.
     for i := 0; i < fs.t.NumField(); i++ {
         field := fs.t.Field(i)
+        name := field.Tag.Get("flag")
+        if name == "_skip" {
+            continue
+        }
 
         f := new(Flag)
         f.field = i
-        f.name = field.Tag.Get("flag")
-        if f.name == "" {
+        if f.name = name; f.name == "" {
             f.name = strings.ToLower(field.Name)
         }
-        f.def = field.Tag.Get("def")
         f.help = field.Tag.Get("help")
         f.typ = field.Type
-        f.def = valueToString(fs.v.Field(i))
+        f.def = field.Tag.Get("def")
+        // Load the default value from the struct value if it is set non-zero.
+        defaultFromStruct := f.def == "" &&
+            !reflect.DeepEqual(fs.v.Field(i).Interface(), reflect.Zero(field.Type))
+        if defaultFromStruct {
+            f.def = valueToString(fs.v.Field(i))
+        }
         fs.flags = append(fs.flags, f)
     }
 

@@ -20,8 +20,19 @@ func FlagWithNameTest(fs *FlagSet, flag string, T *testing.T) (i int) {
 
 type SampleFlags struct {
     Name     string `help:"User name"`
-    NumTimes int    `flag:"n" help:"# of runs"`
+    NumTimes int    `def:"10" flag:"n" help:"# of runs"`
     Verbose  bool   `help:"Verbose output"`
+}
+
+func TestFlagDefaults(T *testing.T) {
+    testobj := SampleFlags{Name:"user"}
+    _, _, err := New(&testobj).Parse([]string{})
+    if err != nil {
+        T.Fatalf("Error parsing flags; %s", err.String())
+    }
+    if testobj.NumTimes != 10 {
+        T.Errorf("Tag specified default %d not set properly %d", 10, testobj.NumTimes)
+    }
 }
 
 func TestFlagNames(T *testing.T) {
