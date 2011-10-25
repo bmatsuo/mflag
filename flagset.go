@@ -49,10 +49,10 @@ func (f *Flag) Default() string {
 //  It holds a pointer to a struct and sets the struct's fields from the flags
 //  set in command line arguments.
 type FlagSet struct {
-    Usage    string
-    FlagHelp string
+    usage    string
+    flaghelp string
     name     string
-    argdesc  string
+    styles   []string
     handling ErrorHandling
     err      os.Error
     v        reflect.Value
@@ -112,21 +112,21 @@ func New(v interface{}) *FlagSet {
     // Fill in the remaining default configuration if no errors have occurred.
     fs.Named(fs.t.Name())
     fs.name = fs.t.Name()
-    fs.argdesc = "[options] [Argument ...]"
-    fs.Usage = `Usage: {{ .Name }} {{ .ArgDesc }}`
-    fs.FlagHelp = `  -{{ .Name }}={{ .Default }}{{ if .Help }}: {{ .Help }}{{ end }}`
+    fs.styles = []string{"[options] [Argument ...]"}
+    fs.usage = "Usage: {{ with $x := . }}{{ range .ArgStyles }}{{ $x.Name }} {{ . }}\n{{ end }}{{ end }}"
+    fs.flaghelp = `  -{{ .Name }}={{ .Default }}{{ if .Help }}: {{ .Help }}{{ end }}`
     return fs
 }
 
 //  Print fs' help message to standard error.
 func (fs *FlagSet) UsageString() (usage string, err os.Error) {
     var t *template.Template
-    t, err = template.New("UsageTemplate").Parse(fs.Usage)
+    t, err = template.New("UsageTemplate").Parse(fs.usage)
     if err != nil {
         return
     }
     b := new(bytes.Buffer)
-    err = t.Execute(b, map[string]string{"Name": fs.name, "ArgDesc": fs.argdesc})
+    err = t.Execute(b, map[string]interface{}{"Name": fs.name, "ArgStyles": fs.styles})
     if err != nil {
         return
     }
@@ -138,7 +138,7 @@ func (fs *FlagSet) UsageString() (usage string, err os.Error) {
 func (fs *FlagSet) PrintHelp() (err os.Error) {
     var ftempl *template.Template
     // Attempt to compile the flag template before printing anything.
-    ftempl, err = template.New("FlagTemplate").Parse(fs.FlagHelp)
+    ftempl, err = template.New("FlagTemplate").Parse(fs.flaghelp)
     if err != nil {
         return
     }
@@ -150,7 +150,7 @@ func (fs *FlagSet) PrintHelp() (err os.Error) {
         return
     }
     if usage != "" {
-        _, err = fmt.Fprintln(os.Stderr, usage)
+        _, err = fmt.Fprint(os.Stderr, usage)
         if err != nil {
             return
         }
@@ -168,6 +168,8 @@ func (fs *FlagSet) PrintHelp() (err os.Error) {
 
 //  The i-th flag in the FlagSet.
 //func (fs *FlagSet)Flag(i int) *Flag { return fs.flags[i] }
+
+func (fs *FlagSet) flagField(i int) int { return fs.flags[i].field }
 
 func (fs *FlagSet) flagWithName(name string) int {
     for i := range fs.flags {
@@ -206,8 +208,22 @@ func (fs *FlagSet) Named(name string) *FlagSet {
 //  Describe the programs arguments with short string. This defaults to a
 //  generic argument description string "[options] [ARGUMENT ...]".
 //  Returns the FlagSet fs so calls can be chained.
-func (fs *FlagSet) WithArgs(desc string) *FlagSet {
-    fs.argdesc = desc
+func (fs *FlagSet) WithArgs(desc... string) *FlagSet {
+    fs.styles = desc
+    return fs
+}
+
+//  Supply a template with which to generate flag help text. Returns the
+//  FlagSet fs so calls can be chained.
+func (fs *FlagSet) WithFlags(helptempl string) *FlagSet {
+    fs.flaghelp = helptempl
+    return fs
+}
+
+//  Supply a template with which to generate the usage string. Returns the
+//  FlagSet fs so calls can be chained.
+func (fs *FlagSet) WithUsage(usagetempl string) *FlagSet {
+    fs.usage = usagetempl
     return fs
 }
 

@@ -19,9 +19,10 @@ func FlagWithNameTest(fs *FlagSet, flag string, T *testing.T) (i int) {
 }
 
 type SampleFlags struct {
-    Name     string `help:"User name"`
-    NumTimes int    `def:"10" flag:"n" help:"# of runs"`
-    Verbose  bool   `help:"Verbose output"`
+    Name     string   `help:"User name"`
+    NumTimes int      `def:"10" flag:"n" help:"# of runs"`
+    Paths    []string `flag:"_skip"`
+    Verbose  bool     `help:"Verbose output"`
 }
 
 func TestFlagDefaults(T *testing.T) {
@@ -43,7 +44,7 @@ func TestFlagNames(T *testing.T) {
         if i < 0 {
             return
         }
-        if testflags.t.Field(i).Name != field {
+        if testflags.t.Field(testflags.flagField(i)).Name != field {
             T.Errorf("Wrong field %s for flag %s", field, flag)
         }
     }
@@ -98,7 +99,15 @@ func TestUsage(T *testing.T) {
     if err != nil {
         T.Errorf("Error generating usage string; %s", err.String())
     }
-    if usage != "Usage: SampleFlags [options] [Argument ...]" {
+    if usage != "Usage: SampleFlags [options] [Argument ...]\n" {
         T.Errorf("FlagSet usage string is not correct '%s'", usage)
+    }
+}
+
+func TestFlagSkip(T *testing.T) {
+    testobj := SampleFlags{Name:"user", NumTimes:10}
+    _, _, err := New(&testobj).Parse([]string{})
+    if err != nil {
+        T.Fatalf("Error parsing flags; %s", err.String())
     }
 }
