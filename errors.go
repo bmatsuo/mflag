@@ -14,6 +14,14 @@ import (
     "os"
 )
 
+//  Possible errors that can be returned from FlagSet.Parse when its
+//  ErrorHandling is Continue.
+var (
+    ErrHelp = os.NewError("mflag: help requested")
+    ErrNoFlag = os.NewError("mflag: unknown flag specified")
+    ErrMissingValue = os.NewError("mflag: flag missing value")
+)
+
 //  A type that specifies how the FlagSet object handles errors during the
 //  Parse method.
 type ErrorHandling uint
@@ -37,10 +45,3 @@ func (h ErrorHandling) Control() ErrorHandling { return h&3 }
 func (h ErrorHandling) Help() bool { return h&Help != 0 }
 //  Returns true if the Debug bit is set.
 func (h ErrorHandling) Debug() bool { return h&Debug != 0 }
-
-//  Possible errors that can be returned from FlagSet.Parse
-var (
-    ErrHelp = os.NewError("mflag: help requested")
-    ErrNoFlag = os.NewError("mflag: unknown flag specified")
-    ErrMissingValue = os.NewError("mflag: flag missing value")
-)

@@ -59,7 +59,7 @@ Flag type and help specifications are derived from the source object's
 struct definition. Default flag values are derived from the source object.
 There are chainable helper methods to customize the FlagSet's usage like the
 WithArgs method seen above. The rest of the program can be located in the
-subdirectory ./examples/gohead/.
+subdirectory "./examples/gohead/".
 
 The above code shows that the programmatic interface is similar to the "flag"
 package. The mflag.FlagSet object has the same basic workflow as the
