@@ -10,16 +10,14 @@ package mflag
  *  Description: FlagSet error handling.
  */
 
-import (
-    "os"
-)
+import "errors"
 
 //  Possible errors that can be returned from FlagSet.Parse when its
 //  ErrorHandling is Continue.
 var (
-    ErrHelp = os.NewError("mflag: help requested")
-    ErrNoFlag = os.NewError("mflag: unknown flag specified")
-    ErrMissingValue = os.NewError("mflag: flag missing value")
+	ErrHelp         = errors.New("mflag: help requested")
+	ErrNoFlag       = errors.New("mflag: unknown flag specified")
+	ErrMissingValue = errors.New("mflag: flag missing value")
 )
 
 //  A type that specifies how the FlagSet object handles errors during the
@@ -28,19 +26,19 @@ type ErrorHandling uint
 
 //  2 bits for control flow.
 const (
-    Continue ErrorHandling = iota
-    Exit
-    Panic
+	Continue ErrorHandling = iota
+	Exit
+	Panic
 )
 
 //  Mutually exclusive flags
 const (
-    Help ErrorHandling = 1 << 2 + iota
-    Debug
+	Help ErrorHandling = 1<<2 + iota
+	Debug
 )
 
 //  Returns one of the control flow values; Continue, Exit, or Panic.
-func (h ErrorHandling) Control() ErrorHandling { return h&3 }
+func (h ErrorHandling) Control() ErrorHandling { return h & 3 }
 //  Returns true if the Help bit is set.
 func (h ErrorHandling) Help() bool { return h&Help != 0 }
 //  Returns true if the Debug bit is set.

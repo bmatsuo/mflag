@@ -29,7 +29,7 @@ func TestFlagDefaults(T *testing.T) {
     testobj := SampleFlags{Name:"user"}
     _, _, err := New(&testobj).Parse([]string{})
     if err != nil {
-        T.Fatalf("Error parsing flags; %s", err.String())
+        T.Fatalf("Error parsing flags; %s", err)
     }
     if testobj.NumTimes != 10 {
         T.Errorf("Tag specified default %d not set properly %d", 10, testobj.NumTimes)
@@ -97,14 +97,14 @@ func TestUsage(T *testing.T) {
     }
     usage, err := testflags.UsageString()
     if err != nil {
-        T.Errorf("Error generating usage string; %s", err.String())
+        T.Errorf("Error generating usage string; %s", err)
     }
     if usage != "Usage: SampleFlags [options] [Argument ...]\n" {
         T.Errorf("FlagSet usage string is not correct '%s'", usage)
     }
     usage, err = testflags.WithArgs("a b", "c d").UsageString()
     if err != nil {
-        T.Errorf("Error generating usage string; %s", err.String())
+        T.Errorf("Error generating usage string; %s", err)
     }
     if usage != "Usage: SampleFlags a b\n       SampleFlags c d\n" {
         T.Errorf("FlagSet usage string is not correct '%s'", usage)
@@ -115,6 +115,6 @@ func TestFlagSkip(T *testing.T) {
     testobj := SampleFlags{Name:"user", NumTimes:10}
     _, _, err := New(&testobj).Parse([]string{})
     if err != nil {
-        T.Fatalf("Error parsing flags; %s", err.String())
+        T.Fatalf("Error parsing flags; %s", err)
     }
 }
